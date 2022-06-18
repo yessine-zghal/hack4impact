@@ -1,3 +1,6 @@
+import os
+import time
+from tkinter import *
 import cv2
 from tkinter.ttk import Combobox
 from tkinter import scrolledtext
@@ -19,6 +22,8 @@ cap= cv2.VideoCapture(0)
 param=40
 mpHands = mp.solutions.hands
 #cathegories = ["ain","al","aleff","bb","dal"]
+
+
 hands = mpHands.Hands(static_image_mode=False,
                           max_num_hands=2,
                           min_detection_confidence=0.5,
@@ -26,9 +31,6 @@ hands = mpHands.Hands(static_image_mode=False,
 #detection hands from camera
 mpDraw = mp.solutions.drawing_utils
 #------------------------------------------------------------------#
-
-
-
 ######################### commun ###################################
 #design button to click on fir your tikenter interface 
 def createButton(window,text,font,color,command,x,y,w,h,image,texte,box):
@@ -45,6 +47,7 @@ def createButton(window,text,font,color,command,x,y,w,h,image,texte,box):
     buton= buton.place(x=x,y=y,width=w,height=h)
     return buton
 #-----------------------------------------------------------------#
+
 ######################### root #####################################
 #declaration root image for your code 
 def declarationimageroot():
@@ -109,6 +112,8 @@ def listeImg (val):
         return os.path.join("Model/data",data_uses[val]+".png")
     return None
 #-----------------------------------------------------------------#
+
+
 ######################### sourde ###################################
 #update the text 
 def set_text(txt,text):
@@ -226,6 +231,7 @@ def show_frames(frame,texts):
     frame.configure(image=imgtk)
     frame.after(1, show_frames,frame,texts)
 #-----------------------------------------------------------------#
+
 #wereting the data 
 def datawrite():
     liste=[]
