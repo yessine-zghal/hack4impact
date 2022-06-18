@@ -41,3 +41,39 @@ def sourde():
     show_frames(frame,txt)
     txt.bind("<Return>", Traduct)
     window.mainloop()
+    #__________________________________________#
+#traduction in the speesh to text 
+def start_nas():
+    root.destroy()
+    nas = Tk()
+    nas.title("نص")
+    nas.geometry('1125x750')
+    nas.resizable(False, False)
+    nasback,nas_btn,img2 = declarationimagenas()
+    img = Label(nas, image=nasback, bg="#9AE1F5", anchor=CENTER)
+    img.place(x=0, y=0)
+    text_to_img = scrolledtext.ScrolledText(nas, width=43, height=20, background="#3580b1")
+    text_to_img.place(x=737, y=259)
+    frame = Label(nas, bg="#3580b1")
+    frame.place(x=57, y=230, width=645, height=420)
+    btn=createButton(nas, None, None, "#3580b1",ajout, 841, 603, 153, 53,nas_btn,text_to_img,frame)
+    nas.mainloop()
+#__________________________________________#
+#function to start the application 
+def start_app():
+    global root
+    root = Tk()
+    root.title("application")
+    root.geometry('650x430')
+    root.resizable(False, False)
+    rootback,ichara,nas = declarationimageroot()
+    img = Label(root,image=rootback,bg="#9AE1F5",anchor=CENTER)
+    img.place(x=0,y=0)
+    buton = Button(root, command=lambda: sourde(),background="#6169df", image=ichara)
+    buton.place(x=64, y=181, width=225, height=75)
+    buton = Button(root, command=lambda: start_nas(), background="#6169df", image=nas)
+    buton.place(x=355, y=181, width=225, height=75)
+    root.mainloop()
+#__________________________________________#
+#starting the application
+start_app()
