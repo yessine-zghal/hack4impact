@@ -226,3 +226,25 @@ def show_frames(frame,texts):
     frame.configure(image=imgtk)
     frame.after(1, show_frames,frame,texts)
 #-----------------------------------------------------------------#
+#wereting the data 
+def datawrite():
+    liste=[]
+    sentence="شكرا على المساعدة"
+word_dict=["sheen","kaaf","ra","aleff","ain","laam","yaa","aleff","laam","meem",
+               "seen","aleff","ghain","ain","dal","ha","toot"]
+word_list = { 'ain':'ع','al':'ال', 'aleff':'ا', 'bb':'ب','dal':'د','dha':'ذ','dhad':'ض','fa':'ف','gaaf':'ق','ghain':'غ',
+             'ha':'ه', 'haa':'ح','jeem':'ج','kaaf':'ك','khaa':'خ','la':'لا','laam':'ل','meem':'م','nun':'ن','ra':'ر'
+             ,'saad':'ص','seen':'س','sheen':'ش','ta':'ط','taa':'ت','thaa':'ث','thal':'ظ','toot':'ة','waw':'و',
+              'ya':'ئ','yaa':'ي','zay':'ز'}
+
+#get the predection from the model
+def pred(predict):
+    for i in predict:
+        k = 0
+        for j in i:
+            if (int(j) == 1) and k < len(cathegories)+1:
+                return k
+            elif (k < len(cathegories) + 1):
+                k += 1
+            else:
+                return 100;
