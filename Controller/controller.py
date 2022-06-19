@@ -109,3 +109,120 @@ def listeImg (val):
         return os.path.join("Model/data",data_uses[val]+".png")
     return None
 #-----------------------------------------------------------------#
+######################### sourde ###################################
+#update the text 
+def set_text(txt,text):
+    if txt !=None:
+        val=txt.get("1.0",END)
+        val=val[0:-1]
+        val=val+str(text)
+        txt.delete("1.0",END)
+        return txt.insert(END,val)
+    return
+#playing the sound to text
+def play(txt,box_list_language):
+    destination=box_list_language.get()
+    engine = pyttsx3.init()
+    if (destination=='fr'):
+        engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_FR - FR_HORTENSE_11.0')
+    if (destination == 'en'):
+        engine.setProperty('voice', 'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Speech\Voices\Tokens\TTS_MS_EN-US_ZIRA_11.0')
+    if (destination == 'ar'):
+        myobj = gTTS(text=txt.get("1.0", END), lang='ar', slow=False)
+        myobj.save("convert.wav")
+        os.system("convert.wav")
+    engine.say(text=txt.get("1.0", END))
+    engine.runAndWait()
+def comboAction(box_list_language):
+    global destination
+    destination = box_list_language.get()
+def declarationimage():
+    global background,sound_img
+    image = Image.open('view/Img/background.png')
+    sound_image = Image.open('view/Img/sound.png')
+    background = ImageTk.PhotoImage(image)
+    sound_img = ImageTk.PhotoImage(sound_image)
+    return background,sound_img
+source='ar'
+#traduction
+def Traduire(txt):
+    global source
+    translated =GoogleTranslator(source=source,target=destination).translate(txt.get("1.0",END))
+    print(translated)
+    source=destination
+    txt.delete('1.0', END)
+    txt.insert(END, translated)
+#detection frame in image hand
+def constrainmin(val, min_val):
+    if val-param < min_val: return min_val
+    return val-param
+def constrainmax(val, max_val):
+    if val+param > max_val: return max_val
+    return val+param
+
+global cTime
+global pTime
+cTime=0
+pTime=0
+i=0
+listadd=["a"]
+#loading federated model 
+model = tf.keras.models.load_model("alphabet.model")
+#intialize the frame and show there
+def show_frames(frame,texts):
+    global pTime
+    global i
+    global listadd
+    img = cv2.cvtColor(cap.read()[1], cv2.COLOR_BGR2RGB)
+    results = hands.process(img)
+    if results.multi_hand_landmarks:
+        cTime = time.time()
+        for handLms in results.multi_hand_landmarks:
+            listx = []
+            listy = []
+            for id, lm in enumerate(handLms.landmark):
+                h, w, c = img.shape
+                cx, cy = int(lm.x *w), int(lm.y*h)
+                #if id ==0:
+                listx.append(cx)
+                listy.append(cy)
+            minx=min(listx)
+            miny=min(listy)
+            maxx=max(listx)
+            maxy=max(listy)
+            minx=constrainmin(minx,0)
+            miny=constrainmin(miny,0)
+            maxx=constrainmax(maxx,w)
+            maxy=constrainmax(maxy,h)
+            cropped_img= img[miny:maxy,minx:maxx]
+            cv2.rectangle(img,(minx-param,miny-param),(maxx+param,maxy+param),(255,0,255), 2)
+            image_size = 28
+            new_array = cv2.resize(cropped_img, (image_size, image_size))
+            test = new_array.reshape(-1, image_size, image_size, 1)
+            print(cTime-pTime)
+            if (cTime-pTime<2):
+                if(i< len(word_dict)):
+                    listadd.append(word_dict[i])
+                #else:
+                    #predict = model.predict([test])
+                    #if (pred(predict) != 100):
+                        #print(cathegories[pred(predict)])
+                        #listadd.append(cathegories[pred(predict)])
+            else :
+                if(max(listadd,key=listadd.count)!="a"):
+                    print(max(listadd,key=listadd.count))
+                value=texts.get("1.0",END)
+                value =word_list[max(listadd,key=listadd.count)]
+                texts.insert(END, str(value))
+                listadd=[]
+                pTime = cTime
+                i=i+1
+
+    else:
+        pTime=time.time()
+    img = Image.fromarray(img)
+    imgtk = ImageTk.PhotoImage(image=img)
+    frame.imgtk = imgtk
+    frame.configure(image=imgtk)
+    frame.after(1, show_frames,frame,texts)
+#-----------------------------------------------------------------#
