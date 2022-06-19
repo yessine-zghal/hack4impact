@@ -247,4 +247,5 @@ def pred(predict):
             elif (k < len(cathegories) + 1):
                 k += 1
             else:
+                
                 return 100;
